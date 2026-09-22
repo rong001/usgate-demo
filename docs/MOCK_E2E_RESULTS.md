@@ -1,6 +1,6 @@
 # MOCK_E2E_RESULTS
 
-**Date (UTC):** 2026-09-22T04:14:43Z
+**Date (UTC):** 2026-09-22T06:54:15Z
 **Mode:** MOCK_XUI=true
 **Command:** `scripts/e2e_mock.sh` → `tests/e2e_mock.py`
 

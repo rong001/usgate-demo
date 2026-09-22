@@ -176,3 +176,33 @@ Hardening applied on public instance only:
 - [x] systemd units enabled (survive reboot)
 - [x] Real 3X-UI on 2053/2096/443 untouched
 - [x] `MOCK_XUI=true` proven via healthz + process env
+
+---
+
+## 8. Re-verify + MOCK labeling (executor continuation) — PASS
+
+**Date (UTC):** 2026-09-22
+
+```bash
+curl -sS https://117.55.227.224:8443/healthz
+# {"ok":true,"mock_xui":true,"mock_xui_fallback":false,"app":"USGate Portal Demo"}
+
+curl -sS -o /dev/null -w 'http_code=%{http_code} ssl_verify_result=%{ssl_verify_result}\n' \
+  https://117.55.227.224:8443/healthz
+# http_code=200 ssl_verify_result=0
+
+echo | openssl s_client -connect 117.55.227.224:8443 -servername 117.55.227.224 2>/dev/null \
+  | openssl x509 -noout -issuer -dates
+# issuer=C=US, O=Let's Encrypt, CN=YE2
+# notBefore=Sep 22 01:51:13 2026 GMT
+# notAfter=Sep 28 17:51:12 2026 GMT
+```
+
+UI: login page shows **MOCK / DEMO ONLY** banner + `MOCK 3X-UI` badge; authenticated nav keeps warn badge; footer states MOCK DEMO / `MOCK_XUI=true`.
+
+Local MOCK E2E re-run: **19 PASS / 0 FAIL** (see `MOCK_E2E_RESULTS.md`).
+
+Deploy note: brief `:8443` outage when `rsync --delete` removed host `Caddyfile.demo`; restored from VPS bak and Caddy returned active. Repo now includes `portal/Caddyfile.demo`.
+
+**Result:** PASS
+

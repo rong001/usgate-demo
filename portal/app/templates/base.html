@@ -8,6 +8,11 @@
   <script src="/static/app.js" defer></script>
 </head>
 <body>
+  {% if mock_mode is defined and mock_mode and not (user is defined and user) %}
+  <div class="mock-banner mock-banner-top" role="status">
+    <strong>MOCK / DEMO ONLY</strong> — <code>MOCK_XUI=true</code> · synthetic panel · not production
+  </div>
+  {% endif %}
   {% if user is defined and user %}
   <nav class="nav">
     <div class="brand"><span>US</span>Gate</div>
@@ -32,6 +37,12 @@
   <div class="wrap">
     {% block content %}{% endblock %}
   </div>
-  <footer>USGate Portal · demo-ready · no secrets in repo</footer>
+  <footer>
+    {% if mock_mode is defined and mock_mode %}
+    USGate Portal · <strong>MOCK DEMO</strong> · <code>MOCK_XUI=true</code> · no secrets in repo
+    {% else %}
+    USGate Portal · demo-ready · no secrets in repo
+    {% endif %}
+  </footer>
 </body>
 </html>

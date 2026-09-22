@@ -1,22 +1,31 @@
 # Android CI status + device matrix (BLOCKED rows)
 
 Public client: **[rong001/usgate-client](https://github.com/rong001/usgate-client)**  
-Workflow: [`.github/workflows/android-ci.yml`](https://github.com/rong001/usgate-client/blob/main/.github/workflows/android-ci.yml)  
+Workflow file (local tip; **not yet on GitHub `main`**): `.github/workflows/android-ci.yml`  
 Emulator notes: [`docs/EMULATOR_TEST.md`](https://github.com/rong001/usgate-client/blob/main/docs/EMULATOR_TEST.md)  
 Results log: [`docs/CI_EMULATOR_RESULTS.md`](https://github.com/rong001/usgate-client/blob/main/docs/CI_EMULATOR_RESULTS.md)
 
-## What automation covers
+## GitHub Actions push — BLOCKED
+
+| Item | Detail |
+|------|--------|
+| Local commit with workflow | Present on operator box (see client `git log`) |
+| `git push origin main` | **Rejected:** OAuth App cannot create/update workflow without `workflow` scope |
+| Token scopes observed | `gist`, `read:org`, `repo` — **missing `workflow`** |
+| `gh auth refresh -h github.com -s workflow` | Starts **device-flow** (browser one-time code) — cannot complete unattended; prior attempts hit rate limits / need human |
+
+**Next user action:** interactively run `gh auth refresh -h github.com -s workflow`, complete the browser device flow, then `git push` from the client repo (commit already ready).
+
+## What automation covers (once workflow is on GitHub)
 
 | Area | Status |
 |------|--------|
 | JDK 17 + Gradle assembleDebug + libbox fetch | CI target (PASS when green) |
-| Unit tests: subscription parse, UI state mock, error strings | CI target |
+| Unit tests: subscription parse, UI state mock, error strings | CI target — **local PASS (9/9)** |
 | Instrumentation smoke (no VPN tunnel) | Best-effort emulator job |
 | Physical device E2E | **User-only** — not CI |
 
 ## Device matrix rows — keep BLOCKED until human sign-off
-
-Use placeholders (`VPS_IP`, `YOUR_SUB_URL`) in public notes. Do **not** commit live IPs/UUIDs into new evidence.
 
 | Matrix row | CI / automation | Physical device |
 |------------|-----------------|-----------------|
@@ -28,6 +37,6 @@ Use placeholders (`VPS_IP`, `YOUR_SUB_URL`) in public notes. Do **not** commit l
 | Disconnect → reconnect | **BLOCKED — NOT PASS** | User-only |
 | Traffic / download through tunnel | **BLOCKED — NOT PASS** | User-only |
 
-Checklist template: [`DEVICE_TEST_CHECKLIST.md`](DEVICE_TEST_CHECKLIST.md) (replace any lab-specific hosts with `VPS_IP` before publishing screenshots).
+Checklist: [`DEVICE_TEST_CHECKLIST.md`](DEVICE_TEST_CHECKLIST.md).
 
-**Statement:** physical Android exit IP / reconnect / traffic must remain **NOT PASS** in CI and in this demo’s automated evidence.
+**Statement:** physical Android exit IP / reconnect / traffic must remain **NOT PASS** in CI and in automated evidence. Emulator absence on this box = **EMULATOR BLOCKED**.

@@ -1,0 +1,22 @@
+# Public MOCK demo TLS terminator for IP :8443 (LE shortlived certs).
+# Used by systemd unit usgate-portal-caddy.service on the lab VPS.
+# Do not use this file for production hostnames — see Caddyfile (Docker template).
+
+{
+	auto_https off
+	admin off
+}
+
+https://117.55.227.224:8443 {
+	tls /etc/letsencrypt/live/117.55.227.224/fullchain.pem /etc/letsencrypt/live/117.55.227.224/privkey.pem
+	encode gzip
+	reverse_proxy 127.0.0.1:8080
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options nosniff
+		X-Frame-Options DENY
+		Referrer-Policy no-referrer
+		-Server
+	}
+}

@@ -79,3 +79,25 @@ th { color: var(--muted); font-weight: 500; }
 .form-inline label { margin: 0; }
 .form-inline input { width: auto; margin: 0; max-width: 100px; }
 footer { text-align: center; color: var(--muted); font-size: .8rem; padding: 2rem 1rem; }
+
+.mock-banner {
+  background: #78350f;
+  color: #fef3c7;
+  border: 1px solid #f59e0b;
+  border-radius: var(--radius);
+  padding: .75rem 1rem;
+  margin: 1rem auto;
+  max-width: 960px;
+  text-align: center;
+  font-size: .9rem;
+  line-height: 1.4;
+}
+.mock-banner-top {
+  margin: 0;
+  max-width: none;
+  border-radius: 0;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+}
+.mock-banner code { color: #fff7ed; }

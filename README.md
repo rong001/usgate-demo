@@ -72,6 +72,10 @@ usgate-demo/
     REAL_PANEL_ACCEPTANCE.md
     DEPLOY_ROLLBACK.md
     CERT_RENEWAL.md
+    HEALTH.md
+    BACKUP_RESTORE.md
+    KEY_ROTATION.md
+    FAIL_BLOCK_MATRIX.md
   scripts/
     deploy-vps.sh         # Local or remote deploy helper (no embedded secrets)
 ```
@@ -156,6 +160,10 @@ On the server: edit `portal/.env` (from `env.example`), set `MOCK_XUI=false` and
 | [docs/REAL_PANEL_ACCEPTANCE.md](docs/REAL_PANEL_ACCEPTANCE.md) | Live panel steps (**BLOCKED** pending credentials) |
 | [docs/DEPLOY_ROLLBACK.md](docs/DEPLOY_ROLLBACK.md) | Deploy & rollback |
 | [docs/CERT_RENEWAL.md](docs/CERT_RENEWAL.md) | LE IP shortlived renew + Caddy hook |
+| [docs/HEALTH.md](docs/HEALTH.md) | Health endpoints & failure signals |
+| [docs/BACKUP_RESTORE.md](docs/BACKUP_RESTORE.md) | Backup / restore (no secrets in git) |
+| [docs/KEY_ROTATION.md](docs/KEY_ROTATION.md) | App/panel/sub rotation boundaries |
+| [docs/FAIL_BLOCK_MATRIX.md](docs/FAIL_BLOCK_MATRIX.md) | Canonical PASS/FAIL/BLOCKED matrix |
 
 ---
 

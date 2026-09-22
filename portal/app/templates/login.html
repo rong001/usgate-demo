@@ -1,9 +1,17 @@
 {% extends "base.html" %}
 {% block title %}Login · {{ app_name }}{% endblock %}
 {% block content %}
+{% if mock_mode %}
+<div class="mock-banner" role="status">
+  <strong>MOCK / DEMO ONLY</strong> — synthetic 3X-UI · not production · <code>MOCK_XUI=true</code>
+  <br /><span lang="zh-CN">仅演示（MOCK）· 合成面板 · 非生产环境</span>
+</div>
+{% endif %}
 <div class="login-box">
   <h1>{{ app_name }}</h1>
-  <p class="muted">User &amp; admin portal / 用户与管理门户</p>
+  <p class="muted">User &amp; admin portal / 用户与管理门户
+    {% if mock_mode %}<span class="badge warn">MOCK 3X-UI</span>{% endif %}
+  </p>
   {% if error %}
   <div class="error">{{ error }}</div>
   {% endif %}
@@ -16,8 +24,13 @@
     <button class="btn" type="submit" style="width:100%;margin-top:.5rem">Sign in</button>
   </form>
   <p class="muted" style="margin-top:1.25rem">
-    Demo (mock): <code>demo</code> / <code>demo1234</code><br />
-    Admin: see <code>BOOTSTRAP_ADMIN_*</code> in env
+    {% if mock_mode %}
+    <strong>DEMO-ONLY accounts</strong> (disposable):<br />
+    User: <code>demo</code> / <code>demo1234</code><br />
+    Admin: see deploy notes / <code>BOOTSTRAP_ADMIN_*</code> in env
+    {% else %}
+    Admin bootstrap: see <code>BOOTSTRAP_ADMIN_*</code> in env
+    {% endif %}
   </p>
 </div>
 {% endblock %}

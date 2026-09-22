@@ -21,13 +21,15 @@ templates = Jinja2Templates(directory="app/templates")
 
 def _login_response(request: Request, error: str | None = None, status: int = 200):
     tok = get_csrf_token(request) or new_csrf_token()
+    settings = get_settings()
     resp = templates.TemplateResponse(
         "login.html",
         {
             "request": request,
             "error": error,
             "csrf_token": tok,
-            "app_name": get_settings().app_name,
+            "app_name": settings.app_name,
+            "mock_mode": settings.mock_xui,
         },
         status_code=status,
     )

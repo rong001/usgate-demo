@@ -21,10 +21,16 @@ Units: `usgate-portal-demo.service`, `usgate-portal-caddy.service`
 
 ```bash
 # on operator machine (example)
-rsync -a --delete --exclude '.venv' --exclude 'data' --exclude '.env' \
+# IMPORTANT: preserve VPS-only Caddyfile.demo (or ship portal/Caddyfile.demo from repo).
+# Prefer --exclude over blind --delete of host-only TLS config.
+rsync -a --delete \
+  --exclude '.venv' --exclude 'data' --exclude '.env' \
+  --exclude 'Caddyfile.demo' \
   portal/ root@117.55.227.224:/opt/usgate-portal-demo/
+# If deploying Caddyfile.demo from repo instead:
+# rsync -a portal/Caddyfile.demo root@117.55.227.224:/opt/usgate-portal-demo/Caddyfile.demo
 ssh root@117.55.227.224 'cd /opt/usgate-portal-demo && .venv/bin/pip install -r requirements.txt && systemctl restart usgate-portal-demo'
-# Do NOT restart x-ui. Prefer reload Caddy only if Caddyfile changed:
+# Do NOT restart x-ui. Reload Caddy only if Caddyfile.demo changed:
 # systemctl reload usgate-portal-caddy   # or restart if reload unsupported
 ```
 

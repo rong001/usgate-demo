@@ -6,6 +6,8 @@
 > subscription URLs, or UUIDs.
 
 **Status:** all items below are **BLOCKED**.
+> **Note:** If panel credentials were auto-rotated without interactive user confirmation, leave this entire file **BLOCKED**. Do not use vault passwords against the live panel for PASS.
+
 
 ## Preconditions (human)
 
