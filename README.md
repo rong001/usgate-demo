@@ -9,6 +9,24 @@ Public **demo** of the USGate personal VPN stack: FastAPI user/admin **portal**,
 
 ---
 
+## Live public MOCK demo (HTTPS)
+
+**URL:** [https://117.55.227.224:8443/](https://117.55.227.224:8443/)
+
+Trusted **Let's Encrypt** IP shortlived certificate (no browser warning when the LE root is in the trust store).  
+Runs with **`MOCK_XUI=true`** only — isolated from any real 3X-UI panel on the same host (ports 2053/2096/443 untouched).
+
+| Account | Password | Role | Notes |
+|---------|----------|------|-------|
+| `demo` | `demo1234` | user | **DEMO-ONLY** disposable credential |
+| `admin` | `DemoAdmin!2026` | admin | **DEMO-ONLY** disposable credential |
+
+Health: `GET /healthz` → `{ "ok": true, "mock_xui": true, "app": "USGate Portal Demo" }`
+
+Evidence of deploy + flow proofs: **[docs/PORTAL_DEMO_EVIDENCE.md](docs/PORTAL_DEMO_EVIDENCE.md)**.
+
+---
+
 ## What is USGate?
 
 USGate is a small personal VPN stack built around:
@@ -45,6 +63,7 @@ usgate-demo/
     ACCEPTANCE.md
     ACCEPTANCE_EVIDENCE.md
     DEVICE_TEST_CHECKLIST.md
+    PORTAL_DEMO_EVIDENCE.md
   scripts/
     deploy-vps.sh         # Local or remote deploy helper (no embedded secrets)
 ```
@@ -114,6 +133,7 @@ On the server: edit `portal/.env` (from `env.example`), set `MOCK_XUI=false` and
 | [docs/ACCEPTANCE_EVIDENCE.md](docs/ACCEPTANCE_EVIDENCE.md) | Lab run evidence (PASS/FAIL; tokens prefix-masked; public IP `117.55.227.224` kept as infra fact) |
 | [docs/DEVICE_TEST_CHECKLIST.md](docs/DEVICE_TEST_CHECKLIST.md) | Physical Android phone checklist |
 | [portal/ACCEPTANCE.md](portal/ACCEPTANCE.md) | Portal-focused checklist |
+| [docs/PORTAL_DEMO_EVIDENCE.md](docs/PORTAL_DEMO_EVIDENCE.md) | Live MOCK HTTPS demo on :8443 (PASS/FAIL curl proofs) |
 
 ---
 
@@ -139,6 +159,7 @@ Do not commit APKs with production configs. See the client repo for Apache-2.0 /
 
 - 本仓库为 **公开演示**：仅占位符，无真实面板密码、订阅路径/令牌、完整 UUID、SSH 私钥或线上 `.env`。
 - 本地试用：`cd portal && cp env.example .env && ./deploy.sh`，浏览器打开 `http://127.0.0.1:8080/`（mock 账号 `demo` / `demo1234`）。
+- **线上 MOCK 演示（可信 HTTPS）：** https://117.55.227.224:8443/ （账号见上文 DEMO-ONLY 表；证据见 `docs/PORTAL_DEMO_EVIDENCE.md`）。
 - 生产 HTTPS 请用 **Let's Encrypt / Certbot 5.4+**（或 Caddy ACME），**不要**给终端用户自签证书。
 - 验收与安全说明见 `docs/`。
 
