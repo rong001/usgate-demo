@@ -84,3 +84,11 @@ See parent report: one concrete remaining action (provide working panel password
 - Client docs pointer: `usgate-client/docs/INTERNAL_CLOSED_LOOP.md`
 - Prior MOCK E2E: `docs/MOCK_E2E_RESULTS.md`
 - Device checklist (when hardware available): `docs/DEVICE_TEST_CHECKLIST.md`
+
+## Commits (this round)
+
+| Repo | SHA | Note |
+|------|-----|------|
+| usgate-demo | `f38d8c0` | ICL test + evidence doc |
+| usgate-client | `798b1cb` | InternalClosedLoopTest + docs pointer |
+| usgate-client workflow | `f655058` (local only) | Not pushed — GitHub Actions workflow remains local |
