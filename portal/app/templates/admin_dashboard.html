@@ -1,5 +1,18 @@
 {% extends "base.html" %}
-{% block title %}Admin · {{ app_name }}{% endblock %}
+{% block title %}Admin · {{ app_name }}
+{% if mock_mode %}
+<div class="card">
+  <h2>MOCK demo reset / 演示重置</h2>
+  <p class="muted">Admin-only. Reseeds synthetic users/audit. Never touches a real panel. / 仅 MOCK；不接触真实面板。</p>
+  <form method="post" action="/admin/demo-reset"
+        onsubmit="return confirm('Reset MOCK demo data? / 确认重置演示数据？');">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+    <button class="btn danger small" type="submit">Reset MOCK demo</button>
+  </form>
+</div>
+{% endif %}
+{% endblock %}
+
 {% block content %}
 <h1>Admin / 管理</h1>
 
@@ -15,6 +28,10 @@
 <div class="error">Username already exists</div>
 {% elif flash == "invalid_input" %}
 <div class="error">Invalid input (password ≥ 6 chars)</div>
+{% elif flash == "demo_reset_ok" %}
+<div class="flash">MOCK demo reset — synthetic users reseeded / 演示数据已重置</div>
+{% elif flash == "demo_reset_blocked_live" %}
+<div class="error">Demo reset blocked: MOCK_XUI is false (live mode)</div>
 {% endif %}
 
 <div class="card">
@@ -90,4 +107,17 @@
     </tbody>
   </table>
 </div>
+
+{% if mock_mode %}
+<div class="card">
+  <h2>MOCK demo reset / 演示重置</h2>
+  <p class="muted">Admin-only. Reseeds synthetic users/audit. Never touches a real panel. / 仅 MOCK；不接触真实面板。</p>
+  <form method="post" action="/admin/demo-reset"
+        onsubmit="return confirm('Reset MOCK demo data? / 确认重置演示数据？');">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+    <button class="btn danger small" type="submit">Reset MOCK demo</button>
+  </form>
+</div>
+{% endif %}
 {% endblock %}
+

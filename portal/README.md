@@ -36,7 +36,7 @@ Demo-ready **user + admin portal** for a personal VPN stack backed by **3X-UI**.
 ## Quick start (mock mode) / 快速开始（模拟面板）
 
 ```bash
-cd portal   # from monorepo root; or stay here if already in portal/
+cd usgate-portal
 cp env.example .env
 # MOCK_XUI=true is the default — no real panel needed
 ./deploy.sh
@@ -48,7 +48,7 @@ Open `http://127.0.0.1:8080/`
 | Account | Password | Role |
 |---------|----------|------|
 | `demo` | `demo1234` | user (seeded against mock client) |
-| `admin` | value of `BOOTSTRAP_ADMIN_PASSWORD` in `.env` (see `env.example`) | admin |
+| `admin` | value of `BOOTSTRAP_ADMIN_PASSWORD` in `.env` (default `changeme`) | admin |
 
 Health: `GET /healthz` → `{ "ok": true, "mock_xui": true }`
 
@@ -125,3 +125,11 @@ See [ACCEPTANCE.md](./ACCEPTANCE.md) for the evidence checklist.
 
 Public **demo** code. Replace all placeholders (`VPS_IP`, `PANEL_PATH`, passwords).  
 Do not commit `.env` or real panel credentials. Personal / lab use only where lawful.
+
+
+## MOCK vs REAL
+
+- `MOCK_XUI=true|false` is the single panel switch (see `env.example`).
+- When `MOCK_XUI=false`, live failures raise structured errors; set `MOCK_XUI_FALLBACK=true` only if you explicitly want mock fallback (default **off**).
+- Public demo must remain `MOCK_XUI=true`.
+- Run `./scripts/e2e_mock.sh` before claiming mock readiness. Demo reset: `POST /admin/demo-reset` or `scripts/reset_mock_demo.py`.

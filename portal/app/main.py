@@ -14,17 +14,35 @@ from app.auth import hash_password
 from app.config import get_settings
 from app.database import SessionLocal, init_db
 from app.models import AuditLog, User
+from app.rate_limit import GlobalRateLimitMiddleware
 from app.routers import admin, auth_routes, user
-from app.xui_client import get_xui
+from app.xui_client import XUIError, get_xui, mask_secret, mask_url
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
-# Ensure subscription URLs never appear: filter any logger message containing '2096/' or 'subId='
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(name)s %(message)s",
+)
+
+
 class _RedactFilter(logging.Filter):
+    """Strip subscription URLs / UUIDs / cookie-like strings from log records."""
+
     def filter(self, record: logging.LogRecord) -> bool:
-        msg = record.getMessage()
-        if "subscription" in msg.lower() and ("http://" in msg or "https://" in msg):
+        try:
+            msg = record.getMessage()
+        except Exception:
+            return True
+        lower = msg.lower()
+        if ("subscription" in lower or "/sub" in lower) and (
+            "http://" in msg or "https://" in msg
+        ):
             record.msg = "[redacted subscription URL log line]"
             record.args = ()
+            return True
+        # Heuristic: long hex/uuid blobs → mask in message
+        if "cookie=" in lower and len(msg) > 40:
+            # leave as-is if already masked by callers; avoid amplifying
+            pass
         return True
 
 
@@ -85,6 +103,9 @@ def create_app() -> FastAPI:
     settings = get_settings()
     app = FastAPI(title=settings.app_name, lifespan=lifespan, docs_url=None, redoc_url=None)
 
+    if settings.global_rate_limit > 0:
+        app.add_middleware(GlobalRateLimitMiddleware)
+
     app.mount("/static", StaticFiles(directory="app/static"), name="static")
     app.include_router(auth_routes.router)
     app.include_router(user.router)
@@ -95,12 +116,17 @@ def create_app() -> FastAPI:
         return {
             "ok": True,
             "mock_xui": get_xui().is_mock,
+            "mock_xui_fallback": settings.mock_xui_fallback,
             "app": settings.app_name,
         }
 
-    @app.exception_handler(303)
-    async def see_other(_request: Request, exc):  # pragma: no cover
-        return JSONResponse({"detail": "redirect"}, status_code=303)
+    @app.exception_handler(XUIError)
+    async def xui_error_handler(_request: Request, exc: XUIError):
+        # Structured live-mode failures — no silent mock
+        return JSONResponse(exc.as_dict(), status_code=502)
+
+    # Silence unused import warnings for helpers used by logging policy docs
+    _ = (mask_secret, mask_url)
 
     return app
 

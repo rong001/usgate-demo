@@ -135,6 +135,33 @@ Listeners after deploy (unchanged real stack + new demo):
 
 ---
 
+
+
+---
+
+## 7. Post-hardening re-verify (ToC readiness track) — PASS
+
+**Date (UTC):** 2026-09-22 (redeploy after switchable adapter + E2E + demo-reset)
+
+```bash
+curl -sS https://117.55.227.224:8443/healthz
+# {"ok":true,"mock_xui":true,"mock_xui_fallback":false,"app":"USGate Portal Demo"}
+
+curl -sS -o /dev/null -w 'http_code=%{http_code} ssl_verify_result=%{ssl_verify_result}\n' \
+  https://117.55.227.224:8443/healthz
+# http_code=200 ssl_verify_result=0
+```
+
+Hardening applied on public instance only:
+
+- `MOCK_XUI=true` enforced; `MOCK_XUI_FALLBACK=false`
+- `XUI_BASE_URL=http://127.0.0.1:9999/MOCK_UNUSED` (no real panel)
+- Login rate limit 5/60s; global rate limit 60/60s
+- Admin `POST /admin/demo-reset` (MOCK only) + daily cron `usgate-portal-demo-reset` (04:17 UTC)
+- TLS / Caddy unit untouched beyond app restart; `x-ui` remains active
+
+**Result:** PASS
+
 ## Deploy notes
 
 - No Docker; Python 3.12 venv under `/opt/usgate-portal-demo/.venv`

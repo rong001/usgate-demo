@@ -114,13 +114,7 @@ async def clear_ips(
         return RedirectResponse("/dashboard", status_code=303)
 
     xui = get_xui()
-    # mock: clear ips on ClientInfo
-    from app.xui_client import _mock
-
-    if user.xui_email in _mock.clients:
-        _mock.clients[user.xui_email].ips = []
-    # live: try clear endpoint (stub-friendly)
-    await xui._api("POST", f"/panel/api/inbounds/clearClientIps/{user.xui_email}")
+    await xui.clear_client_ips(user.xui_email)
     db.add(
         AuditLog(
             actor_username=user.username,

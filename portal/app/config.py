@@ -1,5 +1,6 @@
 """Application settings from environment. No secrets hardcoded."""
 from functools import lru_cache
+
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -15,7 +16,11 @@ class Settings(BaseSettings):
     app_host: str = "0.0.0.0"
     app_port: int = 8080
     app_base_url: str = "http://localhost:8080"
+    # Single switch: true = in-memory mock panel; false = real 3X-UI adapter
     mock_xui: bool = True
+    # When MOCK_XUI=false, allow falling back to mock on panel errors.
+    # Default OFF so ops see structured failures.
+    mock_xui_fallback: bool = False
 
     session_cookie_name: str = "usgate_session"
     session_https_only: bool = False
@@ -33,6 +38,9 @@ class Settings(BaseSettings):
 
     login_rate_limit: int = 5
     login_rate_window_seconds: int = 60
+    # Optional global request rate (0 = disabled)
+    global_rate_limit: int = 120
+    global_rate_window_seconds: int = 60
 
     database_url: str = "sqlite+aiosqlite:///./data/usgate.db"
 
@@ -40,3 +48,7 @@ class Settings(BaseSettings):
 @lru_cache
 def get_settings() -> Settings:
     return Settings()
+
+
+def clear_settings_cache() -> None:
+    get_settings.cache_clear()

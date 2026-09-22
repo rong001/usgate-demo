@@ -15,7 +15,7 @@ from app.deps import current_user, redirect_login
 from app.models import AuditLog, User
 from app.rate_limit import client_ip
 from app.util import format_bytes
-from app.xui_client import get_xui
+from app.xui_client import XUIError, get_xui
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 templates = Jinja2Templates(directory="app/templates")
@@ -100,7 +100,20 @@ async def create_user(
 
     xui_email = username  # map 1:1
     xui = get_xui()
-    info = await xui.create_client(email=xui_email, total_gb=quota_gb, limit_ip=limit_ip)
+    try:
+        info = await xui.create_client(email=xui_email, total_gb=quota_gb, limit_ip=limit_ip)
+    except XUIError as e:
+        db.add(
+            AuditLog(
+                actor_username=admin.username,
+                action="create_user_failed",
+                target=username,
+                detail=f"code={e.code}",
+                ip=client_ip(request),
+            )
+        )
+        await db.commit()
+        return RedirectResponse(f"/admin?flash=xui_error_{e.code}", status_code=303)
 
     user = User(
         username=username,
@@ -262,3 +275,80 @@ async def audit_log(
     resp = templates.TemplateResponse("admin_audit.html", ctx)
     set_csrf_cookie(resp, tok)
     return resp
+
+
+@router.post("/demo-reset")
+async def demo_reset(
+    request: Request,
+    db: Annotated[AsyncSession, Depends(get_db)],
+    admin: Annotated[User | None, Depends(current_user)],
+    csrf_token: Annotated[str, Form()] = "",
+):
+    """
+    Admin-only MOCK demo reseed.
+    Wipes portal users/audit (except recreating bootstrap admin + demo),
+    resets in-memory mock panel clients. Refuses when MOCK_XUI=false.
+    """
+    denied = _require_admin(admin)
+    if denied:
+        return denied
+    validate_csrf(request, csrf_token)
+
+    settings = get_settings()
+    xui = get_xui()
+    if not settings.mock_xui or not xui.is_mock:
+        return RedirectResponse("/admin?flash=demo_reset_blocked_live", status_code=303)
+
+    from app.auth import hash_password
+    from app.rate_limit import reset_rate_buckets
+    from app.xui_client import reset_mock_store
+
+    # Delete all users + audit
+    existing = await db.execute(select(User))
+    for u in existing.scalars().all():
+        await db.delete(u)
+    logs = await db.execute(select(AuditLog))
+    for row in logs.scalars().all():
+        await db.delete(row)
+    await db.flush()
+
+    reset_mock_store()
+    reset_rate_buckets()
+
+    admin_user = User(
+        username=settings.bootstrap_admin_user,
+        password_hash=hash_password(settings.bootstrap_admin_password),
+        is_admin=True,
+        is_active=True,
+        notes="bootstrap admin (demo-reset)",
+    )
+    db.add(admin_user)
+
+    demo_info = await xui.get_client("demo-user1")
+    if demo_info:
+        db.add(
+            User(
+                username="demo",
+                password_hash=hash_password("demo1234"),
+                is_admin=False,
+                is_active=True,
+                xui_email=demo_info.email,
+                xui_uuid=demo_info.uuid,
+                xui_sub_id=demo_info.sub_id,
+                quota_bytes=demo_info.total_bytes,
+                limit_ip=demo_info.limit_ip,
+                notes="seeded demo user (mock reset)",
+            )
+        )
+
+    db.add(
+        AuditLog(
+            actor_username=admin.username if admin else "admin",
+            action="demo_reset",
+            target="mock",
+            detail="reseeded synthetic users; no real panel touched",
+            ip=client_ip(request),
+        )
+    )
+    await db.commit()
+    return RedirectResponse("/admin?flash=demo_reset_ok", status_code=303)
