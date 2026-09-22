@@ -1,35 +1,48 @@
-# Holder: panel sign-in & password rotation (no chat secrets)
+# Holder panel login (browser) — no secrets in chat
 
-Use this when automation reports HTTP 403 on the panel login API and you need a human check.
+**Audience:** Operator who holds the 3X-UI / panel admin password.  
+**Rule:** Never paste the panel password, tokens, subscription bodies, or UUIDs into chat, tickets, or git. Rotate in the panel UI; store only in a private vault / local `.env` that is gitignored.
 
-## Rules
-- Do **not** paste the admin password, subscription URLs, or UUID into chat, tickets, or public repos.
-- Prefer the panel’s own browser UI on the machine/network you trust.
-- Automation must use env-file probes (`panel_login_probe.py --env-file` (on the vault host; see usgate-secrets/bin/)) — never password on CLI argv.
+Related: [`REVOKE_SEMANTICS.md`](./REVOKE_SEMANTICS.md) — portal reject ≠ killing a cached tunnel.
 
-## Shortest sign-in check
-1. Open the panel HTTPS URL you already use (host + port + web base path).
-2. Confirm the page title/sign-in form loads (TLS trusted).
-3. Sign in with the current admin username/password in the browser only.
-4. Note the result for the operator as one of: `browser_ok` / `browser_reject` / `browser_unreachable` — without sending the password.
+## Browser login (high level)
 
-## If browser works but API probe returns 403
-- Tell the operator: browser OK + API 403 (possible API/CSRF/policy mismatch) — still **not** proof of wrong password by itself.
-- Do not ask them to disable security controls casually.
+1. Open the panel URL in a browser on a trusted machine (operator-controlled).
+2. Sign in with the **admin username** you already know.
+3. Enter the **admin password** from your private vault / secure channel — not from this repo.
+4. Confirm you are on the expected host (check TLS / IP / path you configured).
+5. Do not share screenshots that show the password field filled in or live client UUIDs.
 
-## If browser also rejects
-1. Use the panel’s local recovery path you already have on the VPS (official 3x-ui reset flow), **on the server console**, not via chat-pasted passwords.
-2. Set a new admin password yourself.
-3. Store it only in your password manager / `usgate-secrets/panel.env` (mode 600) via a secure channel — not in chat.
-4. Re-run: `panel_login_probe.py --env-file <panel.env on vault host>` and keep only `http=` / `success_field=` lines.
+If login fails: check URL path, clock skew, and whether credentials were rotated. Do **not** ask an assistant to “try passwords” or dump vault files into chat.
 
-## Rotation after accidental shell exposure
-If a password may have appeared in an agent/SSH transcript as a mistaken shell token:
-1. Rotate the panel admin password from a working browser session (or console recovery).
-2. Update the local vault file only.
-3. Revoke/rotate any test client subscriptions created under the old admin session if applicable.
-4. Keep old evidence files; do not wipe logs solely to hide the incident.
+## Rotate admin password (in panel UI)
 
-## Related
-- `docs/REVOKE_SEMANTICS.md` — login reject ≠ tunnel revoke
-- Android APK integrity ≠ device network PASS
+1. While logged in as admin, open the panel **settings / account / security** section (wording varies by 3X-UI build).
+2. Set a **new** strong admin password.
+3. Save; sign out; sign in again with the new password to confirm.
+4. Update your private vault / private `.env` only (`XUI_PASSWORD=…`). Never commit.
+5. Invalidate any shared notes that still list the old password.
+
+Optional API tokens: revoke/regenerate in the panel UI the same way; update private env; do not paste into chat.
+
+## After rotation — revoke awareness
+
+Rotating the admin password protects the **panel**. It does **not** by itself tear down client tunnels that already cached a subscription.
+
+For proprietary clients, see [`REVOKE_SEMANTICS.md`](./REVOKE_SEMANTICS.md):
+
+- disable/revoke the user on the portal/panel, **and**
+- ensure the client clears cached config **and** stops the live session.
+
+Windows local helper (when package is installed on a PC):
+
+```bat
+usgate.exe revoke-local -workdir %LOCALAPPDATA%\USGate
+```
+
+## Still do not mark PASS for
+
+- Real panel acceptance without operator-confirmed credentials: see [`REAL_PANEL_ACCEPTANCE.md`](./REAL_PANEL_ACCEPTANCE.md)
+- Windows physical TUN + real-node revoke proof (cross-compile ≠ device test)
+
+No password resets performed by automation in this document.
