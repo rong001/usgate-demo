@@ -9,8 +9,9 @@ Results log: [`docs/CI_EMULATOR_RESULTS.md`](https://github.com/rong001/usgate-c
 
 | Item | Detail |
 |------|--------|
-| Local commit with workflow | Present on operator box (see client `git log`) |
-| `git push origin main` | **Rejected:** OAuth App cannot create/update workflow without `workflow` scope |
+| Local commit with workflow | `f655058` on operator box (ahead of GitHub `main`) |
+| GitHub `main` tip | `53a9afb` (docs only; no workflow file) |
+| `git push` of workflow commit | **Rejected:** OAuth App cannot create/update workflow without `workflow` scope |
 | Token scopes observed | `gist`, `read:org`, `repo` — **missing `workflow`** |
 | `gh auth refresh -h github.com -s workflow` | Starts **device-flow** (browser one-time code) — cannot complete unattended; prior attempts hit rate limits / need human |
 
