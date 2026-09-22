@@ -2,8 +2,10 @@
 
 Run this on your phone after installing the USGate APK. Check each box and note pass/fail.
 
-**Server:** `117.55.227.224`  
-**Expected exit IP when connected:** `117.55.227.224`  
+> CI does **not** PASS exit-IP / reconnect / traffic. See [`ANDROID_CI_STATUS.md`](ANDROID_CI_STATUS.md).
+
+**Server:** `VPS_IP` (lab only — do not commit real IPs)  
+**Expected exit IP when connected:** `VPS_IP`  
 **Do not screenshot full subscription URLs or UUIDs into chats; mask to first 8 chars if sharing.**
 
 > After a secret rotation, use the **new** HTTPS subscription from the panel (or your operator’s sealed secret store). Old HTTP subscription paths (prefix `4hou6fvc…`) should **404**. If import shows a node whose UUID is literally `1` or `2`, the panel export is broken — ask for a repaired link before continuing.
@@ -43,14 +45,14 @@ Run this on your phone after installing the USGate APK. Check each box and note 
 - [ ] Tap **连接** again; **Allow** VPN permission
 - [ ] Status → **连接中…** then **已连接**
 - [ ] Persistent notification: **USGate** / **安全隧道运行中**
-- [ ] In Chrome/Firefox open `https://api.ipify.org` → must show **`117.55.227.224`**
+- [ ] In Chrome/Firefox open `https://api.ipify.org` → must show **`VPS_IP`**
 - [ ] Open a US site (e.g. google.com) — page loads
 
 ## F. Disconnect & recover
 
 - [ ] Tap **断开** → status **未连接**; notification clears
 - [ ] `api.ipify.org` shows your normal cellular/Wi‑Fi IP (not the VPS)
-- [ ] Tap **连接** again → **已连接**; `api.ipify.org` again **`117.55.227.224`**
+- [ ] Tap **连接** again → **已连接**; `api.ipify.org` again **`VPS_IP`**
 
 ## G. Optional traffic sanity
 

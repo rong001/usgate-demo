@@ -46,3 +46,7 @@ Optional marketing assets live under the client repo (`landing/`, `branding-prev
 |------|------|
 | [rong001/usgate-demo](https://github.com/rong001/usgate-demo) | This monorepo — portal + docs |
 | [rong001/usgate-client](https://github.com/rong001/usgate-client) | Public Android client source |
+
+## CI status
+
+See [`../docs/ANDROID_CI_STATUS.md`](../docs/ANDROID_CI_STATUS.md). Physical exit-IP / reconnect / traffic remain **BLOCKED** (not CI PASS).

@@ -5,7 +5,8 @@ Public **demo** of the USGate personal VPN stack: FastAPI user/admin **portal**,
 > **No live secrets.** Placeholders only (`VPS_IP`, `PANEL_PATH`, `SUB_PATH`, `CHANGE_ME_…`).  
 > Clone this repo and you should **not** get panel passwords, subscription tokens, full UUIDs, or `.env` with production values.
 
-**Related:** Public Android client source → **[rong001/usgate-client](https://github.com/rong001/usgate-client)** (cross-linked with this demo).
+**Related:** Public Android client source → **[rong001/usgate-client](https://github.com/rong001/usgate-client)** (cross-linked with this demo).  
+Android CI / BLOCKED device matrix → [`docs/ANDROID_CI_STATUS.md`](docs/ANDROID_CI_STATUS.md).
 
 ---
 
@@ -62,8 +63,15 @@ usgate-demo/
     SECURITY.md
     ACCEPTANCE.md
     ACCEPTANCE_EVIDENCE.md
+    ACCEPTANCE_MATRIX.md
     DEVICE_TEST_CHECKLIST.md
+    ANDROID_CI_STATUS.md   # client CI + BLOCKED device rows
     PORTAL_DEMO_EVIDENCE.md
+    MOCK_E2E_RESULTS.md
+    REAL_VS_MOCK.md
+    REAL_PANEL_ACCEPTANCE.md
+    DEPLOY_ROLLBACK.md
+    CERT_RENEWAL.md
   scripts/
     deploy-vps.sh         # Local or remote deploy helper (no embedded secrets)
 ```
@@ -88,6 +96,14 @@ cp env.example .env
 | `admin` | `BOOTSTRAP_ADMIN_PASSWORD` from `.env` | admin |
 
 Health: `GET /healthz` → `{ "ok": true, "mock_xui": true }`
+
+MOCK E2E (must PASS before claiming readiness):
+
+```bash
+cd portal && ./scripts/e2e_mock.sh
+```
+
+Boundaries: **[docs/REAL_VS_MOCK.md](docs/REAL_VS_MOCK.md)**. Public demo must stay `MOCK_XUI=true`.
 
 Without Docker:
 
@@ -134,6 +150,12 @@ On the server: edit `portal/.env` (from `env.example`), set `MOCK_XUI=false` and
 | [docs/DEVICE_TEST_CHECKLIST.md](docs/DEVICE_TEST_CHECKLIST.md) | Physical Android phone checklist |
 | [portal/ACCEPTANCE.md](portal/ACCEPTANCE.md) | Portal-focused checklist |
 | [docs/PORTAL_DEMO_EVIDENCE.md](docs/PORTAL_DEMO_EVIDENCE.md) | Live MOCK HTTPS demo on :8443 (PASS/FAIL curl proofs) |
+| [docs/MOCK_E2E_RESULTS.md](docs/MOCK_E2E_RESULTS.md) | Automated MOCK E2E PASS/FAIL table |
+| [docs/ACCEPTANCE_MATRIX.md](docs/ACCEPTANCE_MATRIX.md) | Full matrix (PASS/FAIL/BLOCKED) |
+| [docs/REAL_VS_MOCK.md](docs/REAL_VS_MOCK.md) | Mode boundaries |
+| [docs/REAL_PANEL_ACCEPTANCE.md](docs/REAL_PANEL_ACCEPTANCE.md) | Live panel steps (**BLOCKED** pending credentials) |
+| [docs/DEPLOY_ROLLBACK.md](docs/DEPLOY_ROLLBACK.md) | Deploy & rollback |
+| [docs/CERT_RENEWAL.md](docs/CERT_RENEWAL.md) | LE IP shortlived renew + Caddy hook |
 
 ---
 
