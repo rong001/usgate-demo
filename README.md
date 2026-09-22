@@ -5,6 +5,8 @@ Public **demo** of the USGate personal VPN stack: FastAPI user/admin **portal**,
 > **No live secrets.** Placeholders only (`VPS_IP`, `PANEL_PATH`, `SUB_PATH`, `CHANGE_ME_…`).  
 > Clone this repo and you should **not** get panel passwords, subscription tokens, full UUIDs, or `.env` with production values.
 
+**Related:** Public Android client source → **[rong001/usgate-client](https://github.com/rong001/usgate-client)** (cross-linked with this demo).
+
 ---
 
 ## What is USGate?
@@ -13,7 +15,7 @@ USGate is a small personal VPN stack built around:
 
 - **Dataplane:** VLESS + REALITY (`xtls-rprx-vision`) on a VPS (typically managed by **3X-UI**)
 - **Portal:** FastAPI app for user self-service (subscription link, traffic, reset token) and light admin (quotas, audit)
-- **Android client:** separate `usgate-client` tree — import HTTPS subscription / share links and tunnel device traffic
+- **Android client:** public repo [`rong001/usgate-client`](https://github.com/rong001/usgate-client) — import HTTPS subscription / share links and tunnel device traffic
 
 ### Architecture sketch
 
@@ -117,13 +119,23 @@ On the server: edit `portal/.env` (from `env.example`), set `MOCK_XUI=false` and
 
 ## Android client
 
-This monorepo only ships **docs** under `client-android/`. Build from the separate `usgate-client` sources; do not commit APKs with production configs.
+This monorepo only ships **docs** under [`client-android/`](client-android/). The **public** Android source is:
+
+**https://github.com/rong001/usgate-client**
+
+```bash
+git clone https://github.com/rong001/usgate-client.git
+cd usgate-client
+./gradlew :app:fetchLibbox :app:assembleDebug
+```
+
+Do not commit APKs with production configs. See the client repo for Apache-2.0 / GPL third-party notices and `docs/BUILD_REPRO.md`.
 
 ---
 
 ## 中文简介
 
-**USGate** 是一套个人向 VPN 演示栈：VPS 上 3X-UI / Xray（VLESS + REALITY）+ FastAPI 用户/管理门户 + Android 客户端（独立仓库）。
+**USGate** 是一套个人向 VPN 演示栈：VPS 上 3X-UI / Xray（VLESS + REALITY）+ FastAPI 用户/管理门户 + Android 客户端（公开仓库 [usgate-client](https://github.com/rong001/usgate-client)）。
 
 - 本仓库为 **公开演示**：仅占位符，无真实面板密码、订阅路径/令牌、完整 UUID、SSH 私钥或线上 `.env`。
 - 本地试用：`cd portal && cp env.example .env && ./deploy.sh`，浏览器打开 `http://127.0.0.1:8080/`（mock 账号 `demo` / `demo1234`）。

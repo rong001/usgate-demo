@@ -1,26 +1,30 @@
-# USGate Android Client (docs only)
+# USGate Android Client (docs pointer)
 
-This folder does **not** ship APK secrets or panel credentials.
+This folder does **not** ship APKs, secrets, or panel credentials.
 
-## Source
+## Public source (now available)
 
-Build from the sibling / separate repository:
+The Android client source is public:
 
-- Repo name: `usgate-client`
-- Local (lab): sibling directory `../usgate-client` if you keep both trees side-by-side
+- **Repository:** [https://github.com/rong001/usgate-client](https://github.com/rong001/usgate-client)
+- Local lab sibling (optional): `../usgate-client`
 
 ```bash
-# Example — adjust path to your clone of usgate-client
-cd ../usgate-client   # or: git clone <YOUR_PUBLIC_OR_PRIVATE_CLIENT_URL>
-./gradlew :app:assembleDebug
+git clone https://github.com/rong001/usgate-client.git
+cd usgate-client
+# create local.properties with sdk.dir=...
+./gradlew :app:fetchLibbox :app:assembleDebug
+# APK: app/build/outputs/apk/debug/app-debug.apk
 ```
+
+License notes, sing-box/libbox GPL notices, and reproducible-build steps live in that repo (`LICENSE`, `THIRD_PARTY_NOTICES.md`, `docs/BUILD_REPRO.md`).
 
 ## Importing a subscription (no secrets in this README)
 
 1. Log into the **USGate Portal** as your user.
 2. Copy the **subscription link** from the dashboard (masked on screen; copy = full URL).
-3. In the Android client (v2rayNG / USGate fork / compatible app):
-   - Add subscription → paste URL → update.
+3. In the Android client:
+   - Settings → paste URL → save → import subscription → pick a node → Connect.
 4. If you reset the token in the portal, update the subscription again.
 
 ## What must never be committed
@@ -34,4 +38,11 @@ Use placeholders in public docs: `VPS_IP`, `PANEL_PATH`, `SUB_PATH`, `YOUR_SUB_I
 
 ## Branding / landing
 
-Optional marketing assets may live under the client repo (`landing/`, `branding-previews/`). They are not required to run the portal demo.
+Optional marketing assets live under the client repo (`landing/`, `branding-previews/`). They are not required to run the portal demo.
+
+## Related
+
+| Repo | Role |
+|------|------|
+| [rong001/usgate-demo](https://github.com/rong001/usgate-demo) | This monorepo — portal + docs |
+| [rong001/usgate-client](https://github.com/rong001/usgate-client) | Public Android client source |
