@@ -79,11 +79,21 @@ Physical Android exit-IP, reconnect, and traffic must remain **BLOCKED** until a
 
 See parent report: one concrete remaining action (provide working panel password **or** sideload APK on a physical Android and run device checklist).
 
+## Revoke semantics (acceptance bar)
+
+Canonical: [`docs/REVOKE_SEMANTICS.md`](./REVOKE_SEMANTICS.md)
+
+- Portal ICL checks 7–10 = **reject login/sub** only — **not** full revoke of cached tunnel.
+- Real revoke PASS requires: **cached config cleared** + **live session dead** + real panel/device proof.
+- Skeletons (SKIP/Ignore, not PASS): `usgate-client` `RevokeSemanticsTest`; `usgate-client-win` `TestRealNodeRevokeAcceptance_BLOCKED`.
+
 ## Pointers
 
 - Client docs pointer: `usgate-client/docs/INTERNAL_CLOSED_LOOP.md`
 - Prior MOCK E2E: `docs/MOCK_E2E_RESULTS.md`
 - Device checklist (when hardware available): `docs/DEVICE_TEST_CHECKLIST.md`
+- Revoke semantics: `docs/REVOKE_SEMANTICS.md`
+- Win client scaffold (local): `/home/box/workspace/usgate-client-win/`
 
 ## Commits (this round)
 
