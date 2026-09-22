@@ -5,7 +5,7 @@ Use this when automation reports HTTP 403 on the panel login API and you need a 
 ## Rules
 - Do **not** paste the admin password, subscription URLs, or UUID into chat, tickets, or public repos.
 - Prefer the panel’s own browser UI on the machine/network you trust.
-- Automation must use env-file probes (`usgate-secrets/bin/panel_login_probe.py`) — never password on CLI argv.
+- Automation must use env-file probes (`panel_login_probe.py --env-file` (on the vault host; see usgate-secrets/bin/)) — never password on CLI argv.
 
 ## Shortest sign-in check
 1. Open the panel HTTPS URL you already use (host + port + web base path).
@@ -21,7 +21,7 @@ Use this when automation reports HTTP 403 on the panel login API and you need a 
 1. Use the panel’s local recovery path you already have on the VPS (official 3x-ui reset flow), **on the server console**, not via chat-pasted passwords.
 2. Set a new admin password yourself.
 3. Store it only in your password manager / `usgate-secrets/panel.env` (mode 600) via a secure channel — not in chat.
-4. Re-run: `usgate-secrets/bin/panel_login_probe.py --env-file …/panel.env` and keep only `http=` / `success_field=` lines.
+4. Re-run: `panel_login_probe.py --env-file <panel.env on vault host>` and keep only `http=` / `success_field=` lines.
 
 ## Rotation after accidental shell exposure
 If a password may have appeared in an agent/SSH transcript as a mistaken shell token:
