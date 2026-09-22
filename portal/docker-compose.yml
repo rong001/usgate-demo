@@ -1,0 +1,47 @@
+# USGate Portal — demo-ready compose
+# Copy env.example -> .env and edit placeholders before production use.
+services:
+  portal:
+    build: .
+    container_name: usgate-portal
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      # Defaults safe for local demo if .env missing keys
+      MOCK_XUI: "${MOCK_XUI:-true}"
+      DATABASE_URL: "sqlite+aiosqlite:///./data/usgate.db"
+    volumes:
+      - portal-data:/app/data
+    ports:
+      - "${PORTAL_HOST_PORT:-8080}:8080"
+    networks:
+      - usgate
+
+  # Optional HTTPS reverse proxy. Point DNS A record of PORTAL_DOMAIN to VPS_IP.
+  # Uncomment caddy service for production-like TLS.
+  # caddy:
+  #   image: caddy:2.8-alpine
+  #   restart: unless-stopped
+  #   ports:
+  #     - "80:80"
+  #     - "443:443"
+  #   volumes:
+  #     - ./Caddyfile:/etc/caddy/Caddyfile:ro
+  #     - caddy-data:/data
+  #     - caddy-config:/config
+  #   environment:
+  #     PORTAL_DOMAIN: "${PORTAL_DOMAIN:-portal.example.com}"
+  #   depends_on:
+  #     - portal
+  #   networks:
+  #     - usgate
+
+volumes:
+  portal-data:
+  # caddy-data:
+  # caddy-config:
+
+networks:
+  usgate:
+    driver: bridge

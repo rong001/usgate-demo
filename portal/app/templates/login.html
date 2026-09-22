@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Login · {{ app_name }}{% endblock %}
+{% block content %}
+<div class="login-box">
+  <h1>{{ app_name }}</h1>
+  <p class="muted">User &amp; admin portal / 用户与管理门户</p>
+  {% if error %}
+  <div class="error">{{ error }}</div>
+  {% endif %}
+  <form method="post" action="/login">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+    <label>Username / 用户名</label>
+    <input name="username" autocomplete="username" required />
+    <label>Password / 密码</label>
+    <input name="password" type="password" autocomplete="current-password" required />
+    <button class="btn" type="submit" style="width:100%;margin-top:.5rem">Sign in</button>
+  </form>
+  <p class="muted" style="margin-top:1.25rem">
+    Demo (mock): <code>demo</code> / <code>demo1234</code><br />
+    Admin: see <code>BOOTSTRAP_ADMIN_*</code> in env
+  </p>
+</div>
+{% endblock %}

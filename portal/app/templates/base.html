@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>{% block title %}{{ app_name }}{% endblock %}</title>
+  <link rel="stylesheet" href="/static/style.css" />
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  {% if user is defined and user %}
+  <nav class="nav">
+    <div class="brand"><span>US</span>Gate</div>
+    <div class="links">
+      {% if user.is_admin %}
+        <a href="/admin">Admin</a>
+        <a href="/admin/audit">Audit</a>
+      {% else %}
+        <a href="/dashboard">Dashboard</a>
+      {% endif %}
+      {% if mock_mode is defined and mock_mode %}
+        <span class="badge warn">MOCK 3X-UI</span>
+      {% endif %}
+      <span class="muted">{{ user.username }}</span>
+      <form method="post" action="/logout" style="display:inline">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+        <button class="btn secondary small" type="submit">Logout</button>
+      </form>
+    </div>
+  </nav>
+  {% endif %}
+  <div class="wrap">
+    {% block content %}{% endblock %}
+  </div>
+  <footer>USGate Portal · demo-ready · no secrets in repo</footer>
+</body>
+</html>

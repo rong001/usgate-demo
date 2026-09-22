@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · {{ app_name }}{% endblock %}
+{% block content %}
+<h1>My subscription / 我的订阅</h1>
+
+{% if flash == "sub_reset" %}
+<div class="flash">Subscription token rotated. Update your client with the new link. / 订阅令牌已重置，请在客户端更新链接。</div>
+{% elif flash == "ips_cleared" %}
+<div class="flash">Device/IP list cleared (best-effort). / 设备 IP 列表已清空。</div>
+{% elif flash == "no_client" %}
+<div class="error">No 3X-UI client mapped to this account.</div>
+{% endif %}
+
+{% if not info %}
+<div class="card"><p class="muted">No VPN client linked. Ask an admin to create your account. / 尚未关联 VPN 客户端。</p></div>
+{% else %}
+
+<div class="grid">
+  <div class="card stat">
+    <div class="label">Traffic used / 已用</div>
+    <div class="value">{{ format_bytes(info.used_bytes) }}</div>
+  </div>
+  <div class="card stat">
+    <div class="label">Remaining / 剩余</div>
+    <div class="value">{{ format_bytes(info.remaining_bytes) }}</div>
+  </div>
+  <div class="card stat">
+    <div class="label">Quota / 配额</div>
+    <div class="value">{% if info.total_bytes %}{{ format_bytes(info.total_bytes) }}{% else %}∞{% endif %}</div>
+  </div>
+  <div class="card stat">
+    <div class="label">Status / 状态</div>
+    <div class="value">
+      {% if info.online %}<span class="badge ok">Online</span>{% else %}<span class="badge">Offline</span>{% endif %}
+      {% if not info.enable %}<span class="badge err">Disabled</span>{% endif %}
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>Expiry / 到期</h2>
+  <p>{{ format_expiry(info.expiry_ms) }}</p>
+</div>
+
+<div class="card">
+  <h2>Subscription link / 订阅链接</h2>
+  <p class="muted">Masked for display. Copy uses the full URL once (not logged). / 页面仅显示脱敏链接；复制为完整 URL（不会写入日志）。</p>
+  <div class="sub-row">
+    <span id="sub-masked">{{ sub_masked }}</span>
+    <button type="button" class="btn small" id="copy-sub"
+      data-url="{{ sub_url }}"
+      onclick="copyText(this.dataset.url, this)">Copy</button>
+  </div>
+  <form method="post" action="/dashboard/reset-sub" style="margin-top:1rem"
+        onsubmit="return confirm('Reset subscription token? Old links stop working. / 重置后旧链接失效，确认？');">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+    <button class="btn danger small" type="submit">Reset subscription token / 重置订阅令牌</button>
+  </form>
+</div>
+
+<div class="card">
+  <h2>Devices / IPs / 设备与 IP</h2>
+  <p class="muted">Limit: {{ info.limit_ip }} concurrent IP(s). Shown if panel API allows; mock shows samples.</p>
+  {% if ips %}
+  <ul>
+    {% for ip in ips %}
+    <li><code>{{ ip }}</code></li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="muted">No IPs recorded / 暂无记录</p>
+  {% endif %}
+  <form method="post" action="/dashboard/clear-ips">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}" />
+    <button class="btn secondary small" type="submit">Clear IP list / 清空 IP</button>
+  </form>
+</div>
+{% endif %}
+{% endblock %}

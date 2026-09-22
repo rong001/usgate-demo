@@ -1,0 +1,22 @@
+# Caddyfile template — replace PORTAL_DOMAIN with your hostname.
+# DNS A/AAAA for PORTAL_DOMAIN must point to VPS_IP before first start.
+# Email for ACME: set in env or edit below.
+
+{$PORTAL_DOMAIN:portal.example.com} {
+	encode gzip
+	reverse_proxy portal:8080
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options nosniff
+		X-Frame-Options DENY
+		Referrer-Policy no-referrer
+		-Server
+	}
+
+	log {
+		output stdout
+		format console
+		# Do not log query strings that might contain tokens
+	}
+}

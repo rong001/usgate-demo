@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Audit · {{ app_name }}{% endblock %}
+{% block content %}
+<h1>Audit log / 审计日志</h1>
+<p class="muted">Admin and self-service actions. Subscription URLs are never stored. / 不含订阅完整 URL。</p>
+<div class="card">
+  <table>
+    <thead>
+      <tr><th>Time (UTC)</th><th>Actor</th><th>Action</th><th>Target</th><th>Detail</th><th>IP</th></tr>
+    </thead>
+    <tbody>
+      {% for log in logs %}
+      <tr>
+        <td class="muted">{{ log.created_at }}</td>
+        <td>{{ log.actor_username }}</td>
+        <td><code>{{ log.action }}</code></td>
+        <td>{{ log.target or "—" }}</td>
+        <td class="muted">{{ log.detail or "" }}</td>
+        <td class="muted">{{ log.ip or "" }}</td>
+      </tr>
+      {% else %}
+      <tr><td colspan="6" class="muted">No entries yet</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
