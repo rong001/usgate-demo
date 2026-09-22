@@ -93,7 +93,7 @@ Canonical: [`docs/REVOKE_SEMANTICS.md`](./REVOKE_SEMANTICS.md)
 - Prior MOCK E2E: `docs/MOCK_E2E_RESULTS.md`
 - Device checklist (when hardware available): `docs/DEVICE_TEST_CHECKLIST.md`
 - Revoke semantics: `docs/REVOKE_SEMANTICS.md`
-- Win client scaffold (local): `/home/box/workspace/usgate-client-win/`
+- Win client scaffold: https://github.com/rong001/usgate-client-win (local `/home/box/workspace/usgate-client-win/`)
 
 ## Commits (this round)
 
