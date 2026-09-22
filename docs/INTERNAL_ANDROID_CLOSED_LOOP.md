@@ -102,3 +102,6 @@ Canonical: [`docs/REVOKE_SEMANTICS.md`](./REVOKE_SEMANTICS.md)
 | usgate-demo | `f38d8c0` | ICL test + evidence doc |
 | usgate-client | `798b1cb` | InternalClosedLoopTest + docs pointer |
 | usgate-client workflow | `f655058` (local only) | Not pushed — GitHub Actions workflow remains local |
+
+## Holder panel login
+See [HOLDER_PANEL_LOGIN.md](./HOLDER_PANEL_LOGIN.md).
